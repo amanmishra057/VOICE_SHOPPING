@@ -3,7 +3,7 @@
 /**
  * @fileOverview Finds product information including price and URL from online stores.
  *
- * - findProductInfo - A function that fetches product details from Zepto and Blinkit.
+ * - findProductInfo - A function that fetches product details from Zepto, Blinkit, Amazon, and Flipkart.
  * - FindProductInfoInput - The input type for the findProductInfo function.
  * - FindProductInfoOutput - The return type for the findProductInfo function.
  */
@@ -17,7 +17,7 @@ const FindProductInfoInputSchema = z.object({
 export type FindProductInfoInput = z.infer<typeof FindProductInfoInputSchema>;
 
 const StoreSchema = z.object({
-  name: z.string().describe('The name of the store (e.g., "Zepto", "Blinkit").'),
+  name: z.string().describe('The name of the store (e.g., "Zepto", "Blinkit", "Amazon", "Flipkart").'),
   url: z.string().url().describe('The direct URL to the product page.'),
   price: z.string().nullable().describe('The price of the item, formatted as a string (e.g., "₹120", "$10.50"). Null if not found.'),
 });
@@ -35,7 +35,7 @@ const findProductInfoPrompt = ai.definePrompt({
   name: 'findProductInfoPrompt',
   input: {schema: FindProductInfoInputSchema},
   output: {schema: FindProductInfoOutputSchema},
-  prompt: `You are a shopping assistant. For the following item, find the product URL and price on Zepto and Blinkit.
+  prompt: `You are a shopping assistant. For the following item, find the product URL and price on Zepto, Blinkit, Amazon, and Flipkart.
 
 Item: {{{itemName}}}
 
