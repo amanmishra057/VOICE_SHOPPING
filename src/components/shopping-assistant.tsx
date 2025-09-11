@@ -12,6 +12,7 @@ import SuggestionsSection from './suggestions-section';
 import { ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import FilterControls from './filter-controls';
+import ItemSearch from './item-search';
 
 export default function ShoppingAssistant() {
   const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
@@ -147,6 +148,7 @@ export default function ShoppingAssistant() {
 
       <main className="flex-grow container mx-auto px-4 py-6 pb-32">
         <div className="max-w-2xl mx-auto">
+          <ItemSearch onAddItem={handleAddItem} />
           <SuggestionsSection
             suggestions={suggestions}
             onFetchSuggestions={handleFetchSuggestions}
