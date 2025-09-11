@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Search, ExternalLink, Plus } from 'lucide-react';
+import { Loader2, Search, ExternalLink, Plus, Mic } from 'lucide-react';
 import { findProductInfo, FindProductInfoOutput } from '@/ai/flows/find-product-info';
 import { useToast } from '@/hooks/use-toast';
+import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
+import { cn } from '@/lib/utils';
 
 interface ItemSearchProps {
   onAddItem: (name: string) => void;
@@ -17,6 +19,12 @@ export default function ItemSearch({ onAddItem }: ItemSearchProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<FindProductInfoOutput | null>(null);
   const { toast } = useToast();
+  
+  const handleVoiceResult = useCallback((transcript: string) => {
+    setSearchTerm(transcript);
+  }, []);
+  
+  const { isRecording, startRecognition, stopRecognition, isSupported } = useVoiceRecognition({ onResult: handleVoiceResult });
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -59,9 +67,20 @@ export default function ItemSearch({ onAddItem }: ItemSearchProps) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={isSearching}
+            disabled={isSearching || isRecording}
           />
-          <Button onClick={handleSearch} disabled={isSearching}>
+           {isSupported && (
+             <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={isRecording ? stopRecognition : startRecognition}
+                className={cn(isRecording && 'bg-destructive text-destructive-foreground animate-pulse')}
+                disabled={isSearching}
+             >
+                <Mic />
+             </Button>
+           )}
+          <Button onClick={handleSearch} disabled={isSearching || isRecording}>
             {isSearching ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
