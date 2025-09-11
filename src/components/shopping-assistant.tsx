@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useTransition } from 'react';
+import { useState, useCallback, useTransition, useMemo } from 'react';
 import { ShoppingItem } from '@/lib/types';
 import { getCategory } from '@/lib/categorize';
 import { processVoiceCommand } from '@/ai/flows/process-voice-commands';
@@ -10,11 +10,13 @@ import VoiceInput from './voice-input';
 import SuggestionsSection from './suggestions-section';
 import { ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import FilterControls from './filter-controls';
 
 export default function ShoppingAssistant() {
   const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isFetchingSuggestions, startFetchingSuggestionsTransition] = useTransition();
+  const [filter, setFilter] = useState('all');
   const { toast } = useToast();
 
   const handleVoiceResult = useCallback(async (transcript: string) => {
@@ -96,6 +98,18 @@ export default function ShoppingAssistant() {
     });
   }, [shoppingList, toast]);
 
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set(shoppingList.map(item => item.category));
+    return ['all', ...Array.from(uniqueCategories).sort()];
+  }, [shoppingList]);
+
+  const filteredItems = useMemo(() => {
+    if (filter === 'all') {
+      return shoppingList;
+    }
+    return shoppingList.filter(item => item.category === filter);
+  }, [shoppingList, filter]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-card border-b sticky top-0 z-10">
@@ -115,7 +129,12 @@ export default function ShoppingAssistant() {
             onAddSuggestion={handleAddItem}
             isLoading={isFetchingSuggestions}
           />
-          <ShoppingList items={shoppingList} onRemoveItem={handleRemoveItem} />
+          <FilterControls 
+            categories={categories}
+            currentFilter={filter}
+            onFilterChange={setFilter}
+          />
+          <ShoppingList items={filteredItems} onRemoveItem={handleRemoveItem} />
         </div>
       </main>
 
