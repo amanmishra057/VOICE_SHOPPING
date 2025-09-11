@@ -5,6 +5,7 @@ import { ShoppingItem } from '@/lib/types';
 import { getCategory } from '@/lib/categorize';
 import { processVoiceCommand } from '@/ai/flows/process-voice-commands';
 import { suggestCommonItems } from '@/ai/flows/suggest-common-items';
+import { findProductInfo } from '@/ai/flows/find-product-info';
 import ShoppingList from './shopping-list';
 import VoiceInput from './voice-input';
 import SuggestionsSection from './suggestions-section';
@@ -28,6 +29,7 @@ export default function ShoppingAssistant() {
           id: crypto.randomUUID(),
           name,
           category: getCategory(name),
+          stores: [],
         }))
         .filter(newItem => !shoppingList.some(existingItem => existingItem.name.toLowerCase() === newItem.name.toLowerCase()));
       
@@ -69,6 +71,7 @@ export default function ShoppingAssistant() {
       id: crypto.randomUUID(),
       name,
       category: getCategory(name),
+      stores: [],
     };
     setShoppingList(prevList => [...prevList, newItem]);
     toast({ title: "Item Added", description: name });
@@ -97,6 +100,25 @@ export default function ShoppingAssistant() {
       }
     });
   }, [shoppingList, toast]);
+
+  const handleFetchPrices = useCallback(async (itemId: string, itemName: string) => {
+    try {
+      const { stores } = await findProductInfo({ itemName });
+      setShoppingList(prevList =>
+        prevList.map(item =>
+          item.id === itemId ? { ...item, stores } : item
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching prices:', error);
+      toast({
+        variant: "destructive",
+        title: "Pricing Error",
+        description: `Could not fetch prices for ${itemName}.`,
+      });
+    }
+  }, [toast]);
+
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set(shoppingList.map(item => item.category));
@@ -134,7 +156,7 @@ export default function ShoppingAssistant() {
             currentFilter={filter}
             onFilterChange={setFilter}
           />
-          <ShoppingList items={filteredItems} onRemoveItem={handleRemoveItem} />
+          <ShoppingList items={filteredItems} onRemoveItem={handleRemoveItem} onFetchPrices={handleFetchPrices} />
         </div>
       </main>
 

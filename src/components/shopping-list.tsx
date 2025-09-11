@@ -3,15 +3,24 @@
 import type { ShoppingItem } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trash2, List } from 'lucide-react';
-import { useMemo } from 'react';
+import { Trash2, List, Search, ExternalLink, Loader2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 interface ShoppingListProps {
   items: ShoppingItem[];
   onRemoveItem: (id: string) => void;
+  onFetchPrices: (itemId: string, itemName: string) => Promise<void>;
 }
 
-export default function ShoppingList({ items, onRemoveItem }: ShoppingListProps) {
+export default function ShoppingList({ items, onRemoveItem, onFetchPrices }: ShoppingListProps) {
+  const [fetchingPrices, setFetchingPrices] = useState<string | null>(null);
+  
+  const handleFetchClick = async (itemId: string, itemName: string) => {
+    setFetchingPrices(itemId);
+    await onFetchPrices(itemId, itemName);
+    setFetchingPrices(null);
+  }
+
   const groupedItems = useMemo(() => {
     return items.reduce<Record<string, ShoppingItem[]>>((acc, item) => {
       (acc[item.category] = acc[item.category] || []).push(item);
@@ -43,17 +52,53 @@ export default function ShoppingList({ items, onRemoveItem }: ShoppingListProps)
           <CardContent className="p-0">
             <ul className="divide-y">
               {groupedItems[category].map((item) => (
-                <li key={item.id} className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
-                  <span className="text-base">{item.name}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onRemoveItem(item.id)}
-                    aria-label={`Remove ${item.name}`}
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                <li key={item.id} className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-base">{item.name}</span>
+                    <div className="flex items-center gap-2">
+                       {fetchingPrices !== item.id && (!item.stores || item.stores.length === 0) && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleFetchClick(item.id, item.name)}
+                        >
+                          <Search className="h-4 w-4 mr-2" />
+                          Find Prices
+                        </Button>
+                      )}
+                      {fetchingPrices === item.id && (
+                        <Button variant="outline" size="sm" disabled>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Searching...
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onRemoveItem(item.id)}
+                        aria-label={`Remove ${item.name}`}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  {item.stores && item.stores.length > 0 && (
+                    <div className="mt-3 space-y-2 pl-2 border-l-2 ml-2">
+                        {item.stores.map((store) => (
+                            <a href={store.url} target="_blank" rel="noopener noreferrer" key={store.name} className="flex items-center justify-between text-sm p-2 rounded-md hover:bg-muted/50 transition-colors">
+                                <div className='flex items-center'>
+                                    <img src={`https://logo.clearbit.com/${store.name.toLowerCase()}.com`} alt={store.name} className="w-5 h-5 mr-3 rounded-full object-contain" />
+                                    <span>{store.name}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <span className="font-semibold text-foreground">{store.price || 'N/A'}</span>
+                                    <ExternalLink className="w-4 h-4" />
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
