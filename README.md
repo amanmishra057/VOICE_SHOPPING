@@ -25,37 +25,3 @@ VoiceList Shopper is a smart shopping list application built with Next.js and po
 ## Getting Started
 
 To get started with the application, take a look at `src/app/page.tsx`. The main component is `src/components/shopping-assistant.tsx`, which orchestrates the different parts of the app.
-
-## Uploading to GitHub
-
-Here are the steps to get your project code onto GitHub:
-
-1.  **Create a new repository on GitHub.**
-    Go to [GitHub.com](https://github.com) and create a new, empty repository. Do not initialize it with a README or other files. Copy the repository URL it gives you (it will look something like `https://github.com/your-username/your-repo-name.git`).
-
-2.  **Initialize Git in your project folder.**
-    Open a terminal or command prompt, navigate to your project's root directory, and run:
-    ```bash
-    git init -b main
-    ```
-
-3.  **Add and commit your files.**
-    Stage all your files for the first commit:
-    ```bash
-    git add .
-    git commit -m "Initial commit"
-    ```
-
-4.  **Link your local repository to GitHub.**
-    Use the URL you copied from GitHub in this command:
-    ```bash
-    git remote add origin <your-repository-url>
-    ```
-
-5.  **Push your code to GitHub.**
-    Finally, upload your committed files:
-    ```bash
-    git push -u origin main
-    ```
-
-Now, your project is live on your GitHub repository!
