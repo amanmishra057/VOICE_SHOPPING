@@ -25,10 +25,11 @@ export default function ShoppingAssistant() {
     try {
       const { items } = await processVoiceCommand({ voiceCommand: transcript });
       const newItems: ShoppingItem[] = items
-        .map(name => ({
+        .map(item => ({
           id: crypto.randomUUID(),
-          name,
-          category: getCategory(name),
+          name: item.name,
+          quantity: item.quantity,
+          category: getCategory(item.name),
           stores: [],
         }))
         .filter(newItem => !shoppingList.some(existingItem => existingItem.name.toLowerCase() === newItem.name.toLowerCase()));
@@ -70,6 +71,7 @@ export default function ShoppingAssistant() {
     const newItem: ShoppingItem = {
       id: crypto.randomUUID(),
       name,
+      quantity: '1 unit',
       category: getCategory(name),
       stores: [],
     };

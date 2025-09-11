@@ -53,22 +53,26 @@ export default function ShoppingList({ items, onRemoveItem, onFetchPrices }: Sho
             <ul className="divide-y">
               {groupedItems[category].map((item) => (
                 <li key={item.id} className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-base">{item.name}</span>
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-start justify-between">
+                    <div>
+                        <span className="text-base font-medium">{item.name}</span>
+                        <p className="text-sm text-muted-foreground">{item.quantity}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
                        {fetchingPrices !== item.id && (!item.stores || item.stores.length === 0) && (
                         <Button 
                           variant="outline" 
                           size="sm" 
                           onClick={() => handleFetchClick(item.id, item.name)}
+                          className="text-xs h-8"
                         >
-                          <Search className="h-4 w-4 mr-2" />
+                          <Search className="h-3 w-3 mr-1.5" />
                           Find Prices
                         </Button>
                       )}
                       {fetchingPrices === item.id && (
-                        <Button variant="outline" size="sm" disabled>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Button variant="outline" size="sm" disabled className="text-xs h-8">
+                          <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
                           Searching...
                         </Button>
                       )}

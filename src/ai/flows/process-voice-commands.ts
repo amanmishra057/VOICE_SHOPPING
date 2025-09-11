@@ -16,8 +16,13 @@ const ProcessVoiceCommandInputSchema = z.object({
 });
 export type ProcessVoiceCommandInput = z.infer<typeof ProcessVoiceCommandInputSchema>;
 
+const ItemSchema = z.object({
+    name: z.string().describe('The name of the item.'),
+    quantity: z.string().describe('The quantity of the item (e.g., "1 kg", "2 liters", "1 unit"). Default to "1 unit" if not specified.'),
+});
+
 const ProcessVoiceCommandOutputSchema = z.object({
-  items: z.array(z.string()).describe('The list of items extracted from the voice command.'),
+  items: z.array(ItemSchema).describe('The list of items extracted from the voice command.'),
 });
 export type ProcessVoiceCommandOutput = z.infer<typeof ProcessVoiceCommandOutputSchema>;
 
@@ -29,7 +34,7 @@ const processVoiceCommandPrompt = ai.definePrompt({
   name: 'processVoiceCommandPrompt',
   input: {schema: ProcessVoiceCommandInputSchema},
   output: {schema: ProcessVoiceCommandOutputSchema},
-  prompt: `You are a shopping list assistant. Extract the items that the user wants to add to the shopping list from the following voice command. Return a list of strings, where each string is an item to add to the list.
+  prompt: `You are a shopping list assistant. Extract the items that the user wants to add to the shopping list from the following voice command. For each item, extract the name and the quantity. If no quantity is mentioned, default it to "1 unit".
 
 Voice command: {{{voiceCommand}}}
 
