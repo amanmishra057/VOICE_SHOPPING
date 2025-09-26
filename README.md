@@ -26,9 +26,60 @@ The interface is clean, modern, and intuitive, built with ShadCN UI components a
 
 ## Getting Started
 
-To get started with the application, take a look at `src/app/page.tsx`. The main component is `src/components/shopping-assistant.tsx`, which orchestrates the different parts of the app.
+Follow these instructions to get a local copy of the project up and running.
 
-The core AI logic is handled by Genkit flows, which you can find in the `src/ai/flows/` directory:
-- `process-voice-commands.ts`: Interprets voice input to add items to the list.
-- `suggest-common-items.ts`: Generates product suggestions.
-- `find-product-info.ts`: Fetches prices and links from retailers.
+### Prerequisites
+
+-   Node.js (v18 or later)
+-   npm or yarn
+
+### Installation & Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/your-repository-name.git
+    cd your-repository-name
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Set up environment variables:**
+    -   Create a new file named `.env` in the root of your project directory.
+    -   Obtain an API key from [Google AI Studio](https://aistudio.google.com/).
+    -   Add the following line to your `.env` file, replacing `YOUR_API_KEY` with your actual key:
+        ```
+        GEMINI_API_KEY=YOUR_API_KEY
+        ```
+
+### Running the Application
+
+You need to run two processes in separate terminal windows for the application to work correctly.
+
+1.  **Start the Genkit AI flows:**
+    Open a terminal and run:
+    ```bash
+    npm run genkit:dev
+    ```
+    This command starts the Genkit development server, which handles all the AI-powered features.
+
+2.  **Start the Next.js frontend:**
+    Open a second terminal and run:
+    ```bash
+    npm run dev
+    ```
+    This will start the main web application.
+
+3.  **Open the app:**
+    Open your browser and navigate to `http://localhost:9002` to see the application in action.
+
+## Project Structure
+
+-   `src/app/page.tsx`: The main entry point for the application's UI.
+-   `src/components/shopping-assistant.tsx`: The primary component that orchestrates the different parts of the app.
+-   `src/ai/flows/`: This directory contains the core AI logic handled by Genkit flows.
+    -   `process-voice-commands.ts`: Interprets voice input to add items to the list.
+    -   `suggest-common-items.ts`: Generates product suggestions.
+    -   `find-product-info.ts`: Fetches prices and links from retailers.
