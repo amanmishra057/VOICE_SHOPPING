@@ -35,11 +35,19 @@ const findProductInfoPrompt = ai.definePrompt({
   name: 'findProductInfoPrompt',
   input: {schema: FindProductInfoInputSchema},
   output: {schema: FindProductInfoOutputSchema},
-  prompt: `You are a shopping assistant. For the following item, find the product URL and price on Zepto, Blinkit, Amazon, and Flipkart.
+  prompt: `You are a shopping assistant. For the following item, find an estimated price on Zepto, Blinkit, Amazon, and Flipkart.
 
 Item: {{{itemName}}}
 
-Return the information in the specified JSON format. If you cannot find the item on a store, do not include it in the array. The URL must be a valid URL to the product page.`,
+For the URL, you MUST generate a valid search URL for the item on each respective store's Indian domain (.in for Amazon). Do not generate a direct product link, as it will be invalid.
+
+For example:
+- Amazon: https://www.amazon.in/s?k={{{itemName}}}
+- Flipkart: https://www.flipkart.com/search?q={{{itemName}}}
+- Blinkit: https://blinkit.com/search?q={{{itemName}}}
+- Zepto: https://www.zeptonow.com/search?q={{{itemName}}}
+
+Return the information in the specified JSON format. If you cannot find the item on a store, do not include it in the array.`,
 });
 
 const findProductInfoFlow = ai.defineFlow(
