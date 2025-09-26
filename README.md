@@ -83,3 +83,5 @@ You need to run two processes in separate terminal windows for the application t
     -   `process-voice-commands.ts`: Interprets voice input to add items to the list.
     -   `suggest-common-items.ts`: Generates product suggestions.
     -   `find-product-info.ts`: Fetches prices and links from retailers.
+## Permissions 
+- Browser need to have voice permission or it will show error.
