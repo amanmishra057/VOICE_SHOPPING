@@ -15,8 +15,8 @@ This repository implements the Voice Command Shopping Assistant: voice input, NL
 - python app.py
 
 2. Start frontend:
--cd frontend
--npm install
--npm run start
+- cd frontend
+- npm install
+- npm run start
 
 Open http://localhost:3000 (frontend) which talks to http://localhost:5000 (backend).
