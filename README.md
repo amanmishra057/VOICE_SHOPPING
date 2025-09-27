@@ -8,15 +8,15 @@ This repository implements the Voice Command Shopping Assistant: voice input, NL
 
 ## Run (development)
 1. Start backend:
-    cd backend
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    python app.py
+-  cd backend
+- python3 -m venv venv
+-source venv/bin/activate
+-pip install -r requirements.txt
+- python app.py
 
 2. Start frontend:
-    cd frontend
-    npm install
-    npm run start
+-cd frontend
+-npm install
+-npm run start
 
 Open http://localhost:3000 (frontend) which talks to http://localhost:5000 (backend).
